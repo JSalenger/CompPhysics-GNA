@@ -37,9 +37,9 @@ class GNA:
 
         print("-----")
         print("Epoch " + str(self.epoch) + " finished.")
-        print("Best angle: " + str(self.populates[0].angle))
-        print("Slant height: " + str(self.populates[0].position.y))
+        print("Time: " + str(self.populates[0].time))
         print("Loss: " + str(self.populates[0].getScore()))
+        print("Final position: " + str(self.populates[0].position))
         print("-----")
         self.epoch += 1
 

@@ -10,11 +10,11 @@ from Magnus import Magnus
 from math import pi
 
 class Populate:
-    def __init__(self, angle, gravity, drag, magnus, position=V(0, 0, 0), dt=.1, mass=.045, **kwargs):
-        self.angle = angle
+    def __init__(self, time, gravity, drag, magnus, position=V(0, 0, 0), dt=.1, mass=.045, **kwargs):
+        self.angle = 20
         self.position = position
         self.dead = False
-        self.velocity = V(20 * math.cos(math.radians(angle)), 20 * math.sin(math.radians(angle)), 0)
+        self.velocity = V(60, 0, 0)
         self.sphere = Circle(Point(self.position.x, self.position.y), 1)
         self.sphere.draw(WindowSingleton().instance())
         self.deltaV = 0
@@ -24,43 +24,46 @@ class Populate:
         self.drag = drag
         self.magnus = magnus
         self.mass = mass
+        self.time = time
     
     @staticmethod
     def createNew(dt=.1):
-        mass = 0.045 # kg
-        airDensity = 0 # g/m^3
-        area = pi*0.021335*0.021335 #
-        Cd = 0.2 # drag coefficient
-        g = -1.62 # m/s^2
+        mass = 0.6 # kg
+        airDensity = 1.2 # g/m^3
+        area = pi*0.12*0.12 #
+        Cd = 0.5 # drag coefficient
+        g = -9.8 # m/s^2
 
         gravity = Gravity(g, mass)
-        # drag = Drag(airDensity, Cd, area)
-        # magnus = Magnus(5e-5, V(0, 0, -240), V(0, 0, -20), dt)
+        drag = Drag(airDensity, Cd, area)
+        magnus = Magnus(5e-5, V(0, 0, -240), V(0, 0, -20), dt)
 
-        return Populate(random() * 90, gravity, None, None, dt=dt)
+        time = random() * 2
+
+        return Populate(time, gravity, drag, magnus, V(time * 60, 96.952, 0), dt, mass=mass)
         
     @staticmethod
     def createFrom(populate, stdDev):
-        theta = gauss(populate.angle, stdDev)
+        time = gauss(populate.time, stdDev)
 
-        return Populate(theta, populate.gravity, populate.drag, populate.magnus, dt=populate.dt, mass=populate.mass)
+        time = max(time, 0)
+
+        return Populate(time, populate.gravity, populate.drag, populate.magnus, V(time * 60, 96.952, 0), populate.dt, populate.mass)
 
         
     def update(self):
         if self.dead:
             return    
         
-        wind = V(0, 0, 0)
+        wind = V(-10, 0, 0)
 
-        forces = self.gravity.get() # + self.drag.get(self.velocity, wind) + self.magnus.get(self.velocity, wind)
+        forces = self.gravity.get() + self.drag.get(self.velocity, wind) # + self.magnus.get(self.velocity, wind)
 
         p, v = tick(forces, self.mass, self.velocity, self.position, self.dt)
         self.velocity = v
         self.position = p
-
-        def f(x): return math.tan(math.radians(25)) * (x - 100)
                 
-        if (self.position.y < 0 and self.position.x <= 100) or (self.position.y <= f(self.position.x)):
+        if self.position.y < 0:
             self.dead = True
             return True
         else: 
@@ -71,18 +74,14 @@ class Populate:
         
     def __call__(self):
         died = self.update()
-
-        if not self.dead:
-            self.display()
-
-        
+        self.display()
         return died
         
     def getScore(self):
         goal = V(164, 0, 0)
         distance = V(self.position.y, self.position.x, 0).m
                 
-        return self.position.x
+        return (V(200, 0, 0) - self.position).m
 
     def __del__(self):
         self.sphere.undraw()
