@@ -13,7 +13,7 @@ def decreaseDeviationCallback(self):
     self.stdDev /= 2
 
 epoch = 0  
-gna = GNA(.0001, [45, 25, 15, 9, 6], Populate, 3, [decreaseDeviationCallback], True)
+gna = GNA(.0001, [1], Populate, 3, [decreaseDeviationCallback], True)
 
 def update():
     """ Will be called as many times as possible. """

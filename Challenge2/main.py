@@ -4,6 +4,8 @@ from GNA import GNA
 from WindowSingleton import WindowSingleton
 from graphics import update as refresh
 from time import time
+import math
+from graphics import Point, Line
 
 position = V(0, 0, 0)
 velocity = V(0, 0, 0)
@@ -13,7 +15,7 @@ def decreaseDeviationCallback(self):
     self.stdDev /= 2
 
 epoch = 0  
-gna = GNA(.0001, [45, 25, 15, 9, 6], Populate, 3, [decreaseDeviationCallback], True)
+gna = GNA(.01, [45, 25, 15, 9, 6], Populate, 3, [decreaseDeviationCallback], True)
 
 def update():
     """ Will be called as many times as possible. """
@@ -37,6 +39,12 @@ if __name__ == '__main__':
     _FPS = 30
     _SPF = 1/_FPS # seconds per frame refresh
 
+    # line function
+    def f(x): return math.tan(math.radians(25)) * (x - 100)
+    print(f(200))
+    p1 = Point(100, 0)
+    p2 = Point(800, f(800))
+    Line(p1, p2).draw(WindowSingleton()())
 
     while True:
         update()
