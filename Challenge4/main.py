@@ -10,10 +10,10 @@ velocity = V(0, 0, 0)
 tT = 0
 
 def decreaseDeviationCallback(self):
-    self.stdDev /= 2
+    self.stdDev /= 1.1
 
 epoch = 0  
-gna = GNA(.01, [945, 25, 15, 9, 6], Populate, 3, [decreaseDeviationCallback], True)
+gna = GNA(.01, [45, 25, 15, 9, 6], Populate, 350, [decreaseDeviationCallback], False)
 
 def update():
     """ Will be called as many times as possible. """

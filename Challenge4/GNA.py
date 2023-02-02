@@ -37,24 +37,26 @@ class GNA:
 
         print("-----")
         print("Epoch " + str(self.epoch) + " finished.")
-        print("Best angle: " + str(self.populates[0].angle))
+        print("End point: " + str(self.populates[0].position))
         print("Loss: " + str(self.populates[0].getScore()))
+        print("Max drag: " + str(self.populates[0].maxDrag[0]) + " at time: " + str(self.populates[0].maxDrag[1]))
         print("-----")
         self.epoch += 1
 
         self.populatesDead = 0
 
-        self.populates = tempPopulates
+        self.populates = tempPopulates    
     
     def __call__(self):
         for i in self.populates:
-            died = i()  # could replace with just "if i()"
+            died = i()  # could replace with just "if i()")
             if died:
                 self.populatesDead += 1
-
-        print(self.populates[0].position)
-
+        
         if self.populatesDead == self.populationSize:
+            if self.epoch == 20:
+                raise Exception()
+
             self.createNextGeneration()
             for x in self.callbacks:
                 x(self)

@@ -52,7 +52,6 @@ class GNA:
             if died:
                 self.populatesDead += 1
 
-        print(self.populates[0].position)
 
         if self.populatesDead == self.populationSize:
             self.createNextGeneration()
